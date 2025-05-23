@@ -1,4 +1,4 @@
-# gene-relationships
+# Gene Relationships Analyzer
 This project implements a robust Python-based solution for analyzing the **Longest Common Subsequences (LCS)** between arbitrary strings. It includes features for computing all LCSs, visualizing relationships through an LCS matrix, and proposing strategies to reconstruct genealogical relationships between strings.
 
 ---
