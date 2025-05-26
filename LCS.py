@@ -97,3 +97,86 @@ assert result3 == (['a'], 1), f"Test Case 3 Failed: {result3}"
 assert result4 == (['ac'], 2), f"Test Case 4 Failed: {result4}"
 
 print("All test cases passed successfully!")
+
+import numpy as np
+
+# Given set of strings
+set_strings = [
+    ('a', 'ATGGTGCGAAAGCATCTCTTTTCGTGGCGTGATAAGTTTTATGGTATCCCCGGACGTTGGCTACTACAATTCTCCGAAGTATAAGTGAGTAGGATATGTCAATAACAAGAGGGGATGCGTGACGCATTAGCACCAACTGAATCAAACGATAACTAACGTGGTTTCAGTGAGCGTATGTGGCAAAGGATTGGATACATTTTTCGAGCACGTCTACATAATGACCGTGACAATACTGGAGACTCCGTACCGTCATCTTGACACTCCT'),
+    ('b', 'TGGTGCGAAAGCATCTCTTTTCCGTGGCGTATAGTTTTATGGTATCCCCGGAACGCTGGCTACTACAATCTCCGAAGTATAGAGTGAGTAGATTTAATTAACAGAGGGCGTCGTTGACGCATTAGCACCAACTGAATCAACCGATAACTTAACGTGGGTTTCAGTGACTATAGGGCAAAGGATGAACATTTTCGAGCAGCTCTAATAATGAGCGTGACAATATGAATCCACACCGTCATCTTGAACTCCT'),
+    ('c', 'TCTGTGCGATATACATCTCTATCGTTGCGGTATGTTTTATGTGCATCACCCCACGCGCTGGCTACAGTACAATCTGCTGGAAGTACTAGGTGGTAGTTAATAACTAGGGTGCGTCGTTGCGCATTACACAACTGGACAACCACTTAACTGGGGTAATCAGTGTTTAGGGCAGACAAGATGAAAACAAGTTTTCGAGCAGGCTCCTATAATGAGGACGGAACGTTAATAAATCCAACACCGCACTGCTTCGTAACCCT'),
+    ('d', 'ATGAGGCGCAAAATTCTCTTTCTCGTGGCGCTGATTAAGTTTTATGTATCCCCGGACGTTGGCTACTGACAATTGCTCCGAAGTATAAAGTAGTAGGATATGTCAATAACAAAGACGGGGATAGCGTGACAGCATTAGAACGCAACTGGAATCAAACGTAACCTAAAGGGTTGTCAGGAGCGTATGTGGTCAAAAAGGATTGGATGACATTTTTCGACACGTCTACATAATGACCTGTGACAAACTAGGAGACCTCCTACTCGGTCAATCTTGACGACTCCT'),
+    ('e', 'TGGTGCGATATACATCTCTTTTCGTGCGTATGTTTTATGGTGATCACCCGGAACCGCTGGCTACATACAATCTCTGGAAGTACTAGGTGGTAGTTTAATAACTAGAGGTGCGTCGTTGACGCATTACACAACTGGATCAACCGAACTTAACTGGGTATCAGTGATATAGGGCGACAAGATGAACAATTTTCGAGCAGCTCCTGAATAATGAGACGGAACGTATAATCCAACACCGTCACTGCTTCGAACCCT'),
+    ('f', 'GGGGGAAAGCGATCCCTTATCGTGGCTGTGATAAGTTTTTATCGGGTATCCGCCGGACGTTGGCGTACTACAATTCTCCGAAGTTAAGTGAGTTAGGGATATAGTCAATAACAAGAGGGGATTGTCGTGACGCATAGCACACAACTGAATCAAATCGATAACTAAACGGGTTTCAGTAGAGCGTTGTGGCAAAGATTGGATACATTTTTCGCAGGACGTCTTACCTAATGACGTGGACAATAACTGGCAGACGTCCGTACCGTCATCTTGACCACTCCCT'),
+    ('g', 'TGGTGCGATATACATCCTCTTTTCGTGCGTATGTTTTAGGTACACCGGATACGCCTGGCTTACAAGTACCAATCTCTGAGAAGTCACTGAGGTGGTAGTTTAATAACTAGAAGGGTGCGTCGGACGCATTCACACATACTGGATCAACCGAGACTTAACTGGGGTATCAGTGATTGATAGGGCGACAAGATATACAATTTTCGAGCAGCTCCCTGAATAAGTGAAGAACGGAGACGTATAATCCAACACGATTCACTGCTTCGAACCCT')
+]
+
+# Extract only the sequences
+sequences = [seq for _, seq in set_strings]
+
+def lcs_length(x, y):
+    """
+    Calculates the length of the longest common subsequence (LCS) between two strings.
+
+    This function uses dynamic programming to compute the length of the LCS between
+    two input strings by filling up a 2D matrix with the LCS lengths at each step.
+
+    Parameters
+    ----------
+    x : str
+        The first string to compute the LCS.
+    y : str
+        The second string to compute the LCS.
+
+    Returns
+    -------
+    int
+        The length of the longest common subsequence between x and y.
+    """
+    m, n = len(x), len(y)
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
+
+    # Fill the DP table to find LCS length
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if x[i - 1] == y[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1] + 1
+            else:
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
+
+    return dp[m][n]
+
+# Generate the LCS length matrix
+def generate_lcs_matrix(sequences):
+    """
+    Generates a matrix of LCS lengths between all pairs of sequences.
+
+    This function computes the LCS lengths for all pairs of sequences in the input
+    list of sequences and stores the results in a 2D matrix.
+
+    Parameters
+    ----------
+    sequences : list of str
+        List of strings for which the pairwise LCS lengths are calculated.
+
+    Returns
+    -------
+    np.ndarray
+        A 2D numpy array where each element [i, j] represents the LCS length
+        between sequences[i] and sequences[j].
+    """
+    num_strings = len(sequences)
+    len_lcs_matrix = np.zeros((num_strings, num_strings), dtype=int)
+
+    for i in range(num_strings):
+        for j in range(num_strings):
+            len_lcs_matrix[i, j] = lcs_length(sequences[i], sequences[j])
+
+    return len_lcs_matrix
+
+# Calculate LCS length matrix
+len_lcs_matrix = generate_lcs_matrix(sequences)
+
+# Print the LCS length matrix
+print("LCS Length Matrix:")
+print(len_lcs_matrix)
